@@ -1,0 +1,9 @@
+GRID_SIZE = 40
+EDGE = 2
+RECT_SIZE = GRID_SIZE - EDGE * 2
+
+UP = 0
+DOWN = 1
+LEFT = 2
+RIGHT = 3
+action_list = [UP, DOWN, LEFT, RIGHT]
