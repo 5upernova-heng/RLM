@@ -1,34 +1,36 @@
-# agent: class
-# attribute: pos
-# method: change_pos(): change the position of agent
+"""迷宫类，包含迷宫的属性和方法
 
-# Maze
-# attributes:
-# start/end_pos: the start and end position
-# agent: a position of agent
-# width/height: the number of pixels of width and height
-# walls: a position list of
-# methods:
-# reset: move agent to the start point
-# move: pick a action from the action list, and change the state
-# is_dead: agent is dead or not
-# is_end: agent is reach the end or not
-# is_out_bound: agent is out of bound or not
+Agent: class
+attribute: pos
+method: change_pos(): change the position of agent
+
+Maze
+attributes:
+start/end_pos: the start and end position
+agent: a position of agent
+width/height: the number of pixels of width and height
+walls: a position list of
+methods:
+reset: move agent to the start point
+move: pick a action from the action list, and change the state
+is_dead: agent is dead or not
+is_end: agent is reach the end or not
+is_out_bound: agent is out of bound or not"""
 
 from typing import Tuple
 
 
-class agent:
+class Agent:
     def __init__(self, start_pos) -> None:
-        agent.pos = start_pos
+        Agent.pos = start_pos
 
     def change_pos(self, new_pos):
-        agent.pos = new_pos
+        Agent.pos = new_pos
 
 
 class Maze:
     def __init__(self, width, height, start_pos, end_pos, walls) -> None:
-        self.agent = agent(start_pos)
+        self.agent = Agent(start_pos)
         self.width = width
         self.height = height
         self.start_pos = start_pos

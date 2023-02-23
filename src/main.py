@@ -1,13 +1,16 @@
+"""主程序文件"""
+
+
 import numpy as np
-from mainwindow import *
-from maze import *
-from q_learning import *
+from MainWindow import *
+from Maze import *
+from QLearning import *
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 LOOP_TIME = 1000
 
 
-def algorithm_start(maze: Maze, brain: Q_Learning):
+def algorithm_start(maze: Maze, brain: QLearning):
     for i in range(LOOP_TIME):
         success = False
         dead = False
@@ -34,9 +37,10 @@ if __name__ == "__main__":
     # window = MainWindow()
     start_pos = (0, 0)
     end_pos = (2, 4)
-    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
+    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2],
+                     [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
     maz = Maze(5, 5, start_pos, end_pos, walls)
-    brain = Q_Learning(action_list)
+    brain = QLearning(action_list)
     algorithm_start(maz, brain)
     # app.exec()
