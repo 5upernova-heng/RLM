@@ -24,7 +24,7 @@ def make_maze(w, h):
     return s
 
 
-if __name__ == '__main__':
+def generate_maze():
     rad = randrange(5, 10)
     (w, h) = (rad, rad)
     WIDTH = w * 2 - 1
@@ -47,5 +47,6 @@ if __name__ == '__main__':
             end_pos = (l - 1, r - 1)
             break
     #print(end_pos)
+    return Maze(WIDTH, HEIGHT, start_pos, end_pos, walls)
 
 
