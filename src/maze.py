@@ -18,6 +18,8 @@ is_end: agent is reach the end or not
 is_out_bound: agent is out of bound or not"""
 
 from typing import Tuple
+from PyQt6.QtCore import pyqtSignal, QObject
+import numpy as np
 
 
 class Agent:
@@ -28,14 +30,24 @@ class Agent:
         Agent.pos = new_pos
 
 
-class Maze:
-    def __init__(self, width, height, start_pos, end_pos, walls) -> None:
+class Maze(QObject):
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        start_pos: Tuple[int, int],
+        end_pos: Tuple[int, int],
+        walls: np.array,
+    ) -> None:
+        super().__init__()
         self.agent = Agent(start_pos)
         self.width = width
         self.height = height
         self.start_pos = start_pos
         self.end_pos = end_pos
         self.walls = walls
+
+    move_finished = pyqtSignal()
 
     def get_agent_pos(self) -> Tuple[int, int]:
         return self.agent.pos
@@ -53,6 +65,7 @@ class Maze:
         if action == RIGHT:
             x += 1
         self.agent.change_pos((x, y))
+        self.move_finished.emit()
 
     def feedback(self) -> int:
         """获取反馈 (rewards)"""
@@ -76,31 +89,3 @@ class Maze:
     def isOut(self) -> bool:
         x, y = self.agent.pos
         return x < 0 or x >= self.width or y < 0 or y >= self.height
-
-    # def draw(self):
-    #     """用 PyQt 库画出迷宫"""
-    #     self.setGeometry(0, 0, self.width * GRID_SIZE, self.height * GRID_SIZE)
-    #     self.show()
-
-    # def paintEvent(self, event) -> None:
-    #     painter = QPainter()
-    #     painter.begin(self)
-    #     for i in range(self.width):
-    #         x = i * GRID_SIZE
-    #         painter.drawLine(x, 0, x, self.height * GRID_SIZE)
-    #     for i in range(self.height):
-    #         y = i * GRID_SIZE
-    #         painter.drawLine(0, y, self.width * GRID_SIZE, y)
-    #     for pos in self.walls:
-    #         painter.fillRect(
-    #             pos[0] * GRID_SIZE,
-    #             pos[1] * GRID_SIZE,
-    #             GRID_SIZE,
-    #             GRID_SIZE,
-    #             Qt.GlobalColor.black,
-    #         )
-    #     x, y = self.agent.pos
-    #     painter.fillRect(
-    #         x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE, Qt.GlobalColor.red
-    #     )
-    #     painter.end()
