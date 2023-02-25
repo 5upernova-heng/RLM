@@ -1,5 +1,6 @@
 from random import shuffle, randrange
 import numpy as np
+from maze import Maze
 def make_maze(w, h):
     vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
     ver = [["| "] * w + ['|'] for _ in range(h)] + [[]]
