@@ -3,7 +3,7 @@
     画迷宫的逻辑等"""
 
 import sys
-from MainWindowUI import *
+from main_window_ui import *
 
 
 class MainWindow(QMainWindow, MainWindowUI):
