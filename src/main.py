@@ -16,7 +16,7 @@ def algorithm_start(maze: Maze, brain: QLearning):
         success = False
         dead = False
         maze.reset()
-        state = str(start_pos)
+        state = str(maze.start_pos)
         while True:
             action = brain.make_decision(state)
             maze.move(action)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
     maze = Maze(5, 5, start_pos, end_pos, walls)
-
+    action_list = [UP, DOWN, LEFT, RIGHT]
     # Ui
     app = QApplication(sys.argv)
     window = MainWindow(maze)

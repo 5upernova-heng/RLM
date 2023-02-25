@@ -52,11 +52,24 @@ class MainWindow(QMainWindow, UiMainWindow):
             y = y_start + pos[1] * grid_size
             painter.fillRect(x, y, grid_size, grid_size, Qt.GlobalColor.black)
 
+        # end
+        dest_x, dest_y = self.maze.end_pos
+        dest_x = x_start + dest_x * grid_size
+        dest_y = y_start + dest_y * grid_size
+        dest_margin = grid_size // 10
+        painter.fillRect(
+            dest_x + dest_margin,
+            dest_y + dest_margin,
+            grid_size - 2 * dest_margin,
+            grid_size - 2 * dest_margin,
+            Qt.GlobalColor.green,
+        )
+
         # agent
         agent_x, agent_y = self.maze.agent.pos
         agent_x = x_start + agent_x * grid_size
         agent_y = y_start + agent_y * grid_size
-        agent_margin = grid_size // 8
+        agent_margin = grid_size // 6
         painter.fillRect(
             agent_x + agent_margin,
             agent_y + agent_margin,
