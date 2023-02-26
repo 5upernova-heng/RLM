@@ -12,9 +12,10 @@ from maze_maker import *
 from main import algorithm_start
 import threading
 
-UP,DOWN,LEFT,RIGHT = 0,1,2,3
+UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 action_list = [UP, DOWN, LEFT, RIGHT]
 algorithm_list = {"Q_Learning": "QLearning", "Sarsa": "Sarsa"}
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, maze: Maze) -> None:
@@ -23,20 +24,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.maze = maze
         self.brain = QLearning(action_list)
         # self.dead_time=0
-        
+
         self.spinBox.setMinimum(5)
         self.pushButton.clicked.connect(self.start)
         self.pushButton_2.clicked.connect(self.new_maze)
         self.comboBox.currentTextChanged.connect(self.change_algorithm)
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
-        # self.maze.dead_happen.connect(self.dead_time_calculate)
+        self.maze.iterate_finished.connect(self.show_iteration_times)
         self.show()
 
     def paintEvent(self, event) -> None:
         painter = QPainter()
         painter.begin(self)
-        # print("clicked")
         canvas_rect = self.canvas.frameGeometry()
         grid_size = min(
             canvas_rect.width() // self.maze.width,
@@ -95,16 +95,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             Qt.GlobalColor.red,
         )
         painter.end()
-        
 
-    def start(self,brain):
+    def start(self, brain):
         self.pushButton.setEnabled(False)
         self.comboBox.setEnabled(False)
         self.pushButton_2.setEnabled(False)
 
-        self.dead_time=0
+        self.dead_time = 0
 
-        threading.Thread(target=algorithm_start, args=(self.maze,self.brain)).start()
+        threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
 
     def recover(self):
         self.pushButton.setEnabled(True)
@@ -112,21 +111,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBox.setEnabled(True)
 
     def change_algorithm(self):
-        self.brain=algorithm_list[self.comboBox.currentText()](action_list)
+        self.brain = algorithm_list[self.comboBox.currentText()](action_list)
 
-    # def dead_time_calculate(self):
-    #     self.dead_time=self.dead_time+1
-    #     self.label.setText("Dead Time: "+str(self.dead_time))
-        
+    def show_iteration_times(self, iteration_time):
+        self.label.setText(f"Agent has iterate: {str(iteration_time)} times")
 
     def new_maze(self):
-        # self.maze.dead_happen.disconnect(self.dead_time_calculate)
+        self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
-        self.maze=generate_maze(self.spinBox.value())
+        self.maze = generate_maze(self.spinBox.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
-        # self.maze.dead_happen.connect(self.dead_time_calculate)
+        self.maze.iterate_finished.connect(self.show_iteration_times)
         self.update()
-
-        
