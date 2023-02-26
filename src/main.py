@@ -1,6 +1,7 @@
 """主程序文件"""
 
-
+import sys
+import threading
 import numpy as np
 from main_window import *
 from maze import *
@@ -15,7 +16,7 @@ def algorithm_start(maze: Maze, brain: QLearning):
         success = False
         dead = False
         maze.reset()
-        state = str(start_pos)
+        state = str(maze.start_pos)
         while True:
             action = brain.make_decision(state)
             maze.move(action)
@@ -33,13 +34,18 @@ def algorithm_start(maze: Maze, brain: QLearning):
 
 
 if __name__ == "__main__":
-    # app = QApplication(sys.argv)
-    # window = MainWindow()
+    # Maze
     start_pos = (0, 0)
     end_pos = (2, 4)
     walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
-    maz = Maze(5, 5, start_pos, end_pos, walls)
+    maze = Maze(5, 5, start_pos, end_pos, walls)
+    action_list = [UP, DOWN, LEFT, RIGHT]
+    # Ui
+    app = QApplication(sys.argv)
+    window = MainWindow(maze)
+
+    # Algorithm
     brain = QLearning(action_list)
-    algorithm_start(maz, brain)
-    # app.exec()
+    threading.Thread(target=algorithm_start, args=(maze, brain)).start()
+    app.exec()

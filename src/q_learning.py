@@ -4,7 +4,11 @@ import numpy as np
 
 class QLearning:
     def __init__(
-        self, action_list, learning_rate=0.01, reward_decay=0.9, epsilon=0.9
+        self,
+        action_list,
+        learning_rate: float = 0.01,
+        reward_decay: float = 0.9,
+        epsilon: float = 0.9,
     ) -> None:
         self.action_list = action_list
         self.learning_rate = learning_rate
@@ -50,8 +54,7 @@ class QLearning:
         if reward == 0:
             # 还是路
             fixed = (
-                reward + self.reward_decay *
-                self.q_table.loc[next_state, action]
+                reward + self.reward_decay * self.q_table.loc[next_state, action]
             )  # 修正后的值
         else:
             # 墙（-1）或者终点（1）
