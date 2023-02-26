@@ -17,24 +17,25 @@ action_list = [UP, DOWN, LEFT, RIGHT]
 algorithm_list = {"Q_Learning": "QLearning", "Sarsa": "Sarsa"}
 
 
-class MainWindow(QMainWindow, UiMainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, maze: Maze) -> None:
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.maze = maze
         self.brain = QLearning(action_list)
 
+        self.spinBox.setMinimum(5)
         self.pushButton.clicked.connect(self.start)
         self.pushButton_2.clicked.connect(self.new_maze)
         self.comboBox.currentTextChanged.connect(self.change_algorithm)
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
+        self.maze.iterate_finished.connect(self.show_iteration_times)
         self.show()
 
     def paintEvent(self, event) -> None:
         painter = QPainter()
         painter.begin(self)
-        # print("clicked")
         canvas_rect = self.canvas.frameGeometry()
         grid_size = min(
             canvas_rect.width() // self.maze.width,
@@ -95,37 +96,31 @@ class MainWindow(QMainWindow, UiMainWindow):
         painter.end()
 
     def start(self, brain):
-        """开始算法, 并禁用 comboBox 和 start 按钮
-        setEnable(False)"""
-        # print("clicked")
-
         self.pushButton.setEnabled(False)
         self.comboBox.setEnabled(False)
         self.pushButton_2.setEnabled(False)
 
+        self.dead_time = 0
+
         threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
 
     def recover(self):
-        # print("clicked")
-        self.pushButton.setEnabled(True)
-        self.pushButton_2.setEnabled(True)
-        self.comboBox.setEnabled(True)
-
-    def recover(self):
-        # print("clicked")
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(True)
         self.comboBox.setEnabled(True)
 
     def change_algorithm(self):
-        """根据 comboBox 里面的 Text, 改变当前使用的算法"""
-
         self.brain = algorithm_list[self.comboBox.currentText()](action_list)
 
+    def show_iteration_times(self, iteration_time):
+        self.label.setText(f"Agent has iterate: {str(iteration_time)} times")
+
     def new_maze(self):
+        self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
-        self.maze = generate_maze(10)
+        self.maze = generate_maze(self.spinBox.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
+        self.maze.iterate_finished.connect(self.show_iteration_times)
         self.update()

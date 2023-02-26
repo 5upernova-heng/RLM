@@ -115,11 +115,6 @@
          </property>
          <item>
           <property name="text">
-           <string>Recurrence</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Q_Learning</string>
           </property>
          </item>
