@@ -33,13 +33,14 @@ def algorithm_start(maze: Maze, brain: QLearning):
 
 
 if __name__ == "__main__":
-    # app = QApplication(sys.argv)
-    # window = MainWindow()
+    # print("Please input the Square side length:")
+    # Len = int(input())
+    # Maze
     start_pos = (0, 0)
-    end_pos = (2, 4)
-    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
+    maze = generate_maze(3)
     action_list = [UP, DOWN, LEFT, RIGHT]
-    maz = Maze(5, 5, start_pos, end_pos, walls)
-    brain = QLearning(action_list)
-    algorithm_start(maz, brain)
-    # app.exec()
+    # Ui
+    app = QApplication(sys.argv)
+    window = MainWindow(maze)
+
+    app.exec()
