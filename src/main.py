@@ -6,6 +6,7 @@ import numpy as np
 from main_window import *
 from maze import *
 from q_learning import *
+from maze_maker import *
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 LOOP_TIME = 1000
@@ -34,12 +35,12 @@ def algorithm_start(maze: Maze, brain: QLearning):
 
 
 if __name__ == "__main__":
+    print("Please input the Square side length:")
+    Len = int(input())
     # Maze
     start_pos = (0, 0)
-    end_pos = (2, 4)
-    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
-    maze = Maze(5, 5, start_pos, end_pos, walls)
+    maze = generate_maze(Len)
     action_list = [UP, DOWN, LEFT, RIGHT]
     # Ui
     app = QApplication(sys.argv)
