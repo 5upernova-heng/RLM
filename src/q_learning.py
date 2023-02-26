@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from rich import print
 
 
 class QLearning:
@@ -94,7 +93,7 @@ class QLearning:
         else:
             # wall(-1) or end(1)
             fixed_value = reward
-            print(self.q_table)
+            # print(self.q_table)
         # learn
         self.q_table.loc[state, action] += self.learning_rate * (
             fixed_value - predict_value

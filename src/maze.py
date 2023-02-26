@@ -73,6 +73,8 @@ class Maze(QObject):
         if self.isWall() or self.isOut():
             return -1
         if self.isEnd():
+            # print("clicked")
+            self.recover_Button.emit()
             return 1
         return 0
 
@@ -85,7 +87,6 @@ class Maze(QObject):
         return ([x, y] == self.walls).all(1).any()
 
     def isEnd(self) -> bool:
-        self.recover_Button.emit()
         return self.agent.pos == self.end_pos
 
     def isOut(self) -> bool:

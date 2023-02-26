@@ -106,6 +106,7 @@ class MainWindow(QMainWindow, UiMainWindow):
 
     def recover(self):
         
+        # print("clicked")
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(True)
         self.comboBox.setEnabled(True)
@@ -116,7 +117,10 @@ class MainWindow(QMainWindow, UiMainWindow):
         self.brain=algorithm_list[self.comboBox.currentText()](action_list)
 
     def new_maze(self):
+        self.maze.move_finished.disconnect(self.update)
+        self.maze.recover_Button.disconnect(self.recover)
         self.maze=generate_maze(5)
         self.maze.move_finished.connect(self.update)
+        self.maze.recover_Button.connect(self.recover)
         self.update()
         
