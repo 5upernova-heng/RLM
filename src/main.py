@@ -1,10 +1,12 @@
 """主程序文件"""
 
-
+import sys
+import threading
 import numpy as np
 from main_window import *
 from maze import *
 from q_learning import *
+from maze_maker import *
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 LOOP_TIME = 1000
@@ -15,7 +17,7 @@ def algorithm_start(maze: Maze, brain: QLearning):
         success = False
         dead = False
         maze.reset()
-        state = str(start_pos)
+        state = str(maze.start_pos)
         while True:
             action = brain.make_decision(state)
             maze.move(action)
