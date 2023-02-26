@@ -22,10 +22,11 @@ class MainWindow(QMainWindow, UiMainWindow):
         self.setupUi(self)
         self.maze = maze
         self.brain = QLearning(action_list)
-        self.maze.move_finished.connect(self.update)
+        
         self.pushButton.clicked.connect(self.start)
         self.pushButton_2.clicked.connect(self.new_maze)
         self.comboBox.currentTextChanged.connect(self.change_algorithm)
+        self.maze.move_finished.connect(self.update)
         self.show()
 
     def paintEvent(self, event) -> None:
@@ -112,4 +113,6 @@ class MainWindow(QMainWindow, UiMainWindow):
 
     def new_maze(self):
         self.maze=generate_maze(5)
+        self.maze.move_finished.connect(self.update)
         self.update()
+        
