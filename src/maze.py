@@ -48,6 +48,7 @@ class Maze(QObject):
         self.walls = walls
 
     move_finished = pyqtSignal()
+    recover_Button = pyqtSignal()
 
     def get_agent_pos(self) -> Tuple[int, int]:
         return self.agent.pos
@@ -84,6 +85,7 @@ class Maze(QObject):
         return ([x, y] == self.walls).all(1).any()
 
     def isEnd(self) -> bool:
+        self.recover_Button.emit()
         return self.agent.pos == self.end_pos
 
     def isOut(self) -> bool:
