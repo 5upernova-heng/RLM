@@ -13,7 +13,7 @@ LOOP_TIME = 1000
 
 
 def algorithm_start(maze: Maze, brain: QLearning):
-    for i in range(LOOP_TIME):
+    while True:
         success = False
         dead = False
         maze.reset()
