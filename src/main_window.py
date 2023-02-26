@@ -8,6 +8,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from maze import Maze
 from q_learning import *
+from maze_maker import *
 from main import algorithm_start
 import threading
 
@@ -23,12 +24,14 @@ class MainWindow(QMainWindow, UiMainWindow):
         self.brain = QLearning(action_list)
         self.maze.move_finished.connect(self.update)
         self.pushButton.clicked.connect(self.start)
+        self.pushButton_2.clicked.connect(self.new_maze)
         self.comboBox.currentTextChanged.connect(self.change_algorithm)
         self.show()
 
     def paintEvent(self, event) -> None:
         painter = QPainter()
         painter.begin(self)
+        # print("clicked")
         canvas_rect = self.canvas.frameGeometry()
         grid_size = min(
             canvas_rect.width() // self.maze.width,
@@ -106,3 +109,7 @@ class MainWindow(QMainWindow, UiMainWindow):
         #     print("clicked1")
         # elif self.comboBox.currentText() == "Sarsa":
         #     print("clicked2")
+
+    def new_maze(self):
+        self.maze=generate_maze(5)
+        self.update()
