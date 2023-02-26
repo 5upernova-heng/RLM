@@ -7,14 +7,16 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from maze import *
-from q_learning import *
-from maze_maker import *
+from q_learning import QLearning
+from recursive_walk import RecursiveWalk
+from kruskal import Kruskal
 from main import algorithm_start
 import threading
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 action_list = [UP, DOWN, LEFT, RIGHT]
-algorithm_list = {"Q_Learning": "QLearning", "Sarsa": "Sarsa"}
+rl_algorithm_list = {"Q_Learning": QLearning, "Sarsa": "Sarsa"}
+maze_generator_list = {"Recursive Walk": RecursiveWalk, "Kruskal": Kruskal}
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -22,12 +24,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.maze = maze
-        self.brain = QLearning(action_list)
-
+        self.brain = rl_algorithm_list[self.comboBox.currentText()](action_list)
+        self.maze_generator = maze_generator_list[self.comboBox_2.currentText()]()
         self.spinBox.setMinimum(5)
         self.pushButton.clicked.connect(self.start)
         self.pushButton_2.clicked.connect(self.new_maze)
-        self.comboBox.currentTextChanged.connect(self.change_algorithm)
+        self.comboBox.currentTextChanged.connect(self.change_rl_algorithm)
+        self.comboBox_2.currentIndexChanged.connect(self.change_maze_generator)
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
         self.maze.iterate_finished.connect(self.show_iteration_times)
@@ -97,10 +100,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def start(self, brain):
         self.pushButton.setEnabled(False)
-        self.comboBox.setEnabled(False)
         self.pushButton_2.setEnabled(False)
-
-        self.dead_time = 0
+        self.comboBox.setEnabled(False)
+        self.comboBox_2.setEnabled(False)
 
         threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
 
@@ -108,9 +110,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(True)
         self.comboBox.setEnabled(True)
+        self.comboBox_2.setEnabled(True)
 
-    def change_algorithm(self):
-        self.brain = algorithm_list[self.comboBox.currentText()](action_list)
+    def change_rl_algorithm(self):
+        self.brain = rl_algorithm_list[self.comboBox.currentText()](action_list)
+
+    def change_maze_generator(self):
+        self.maze_generator = maze_generator_list[self.comboBox_2.currentText()]()
 
     def show_iteration_times(self, iteration_time):
         self.label.setText(f"Agent has iterate: {str(iteration_time)} times")
@@ -119,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
-        self.maze = generate_maze(self.spinBox.value())
+        self.maze = self.maze_generator.generate(self.spinBox.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
         self.maze.iterate_finished.connect(self.show_iteration_times)
