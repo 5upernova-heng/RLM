@@ -86,7 +86,7 @@ class UiMainWindow(object):
         sizePolicy.setHeightForWidth(self.comboBox.sizePolicy().hasHeightForWidth())
         self.comboBox.setSizePolicy(sizePolicy)
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
+        # self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.gridLayout.addWidget(self.comboBox, 1, 1, 1, 1)
@@ -129,8 +129,8 @@ class UiMainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Recurrence"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "Q_Learning"))
-        self.comboBox.setItemText(2, _translate("MainWindow", "Sarsa"))
+        # self.comboBox.setItemText(0, _translate("MainWindow", "Recurrence"))
+        self.comboBox.setItemText(0, _translate("MainWindow", "Q_Learning"))
+        self.comboBox.setItemText(1, _translate("MainWindow", "Sarsa"))
         self.pushButton.setText(_translate("MainWindow", "Start"))
         self.pushButton_2.setText(_translate("MainWindow", "Generate Maze"))

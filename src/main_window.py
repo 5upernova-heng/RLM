@@ -7,14 +7,23 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from maze import Maze
+from q_learning import *
+from main import algorithm_start
+import threading
 
+UP,DOWN,LEFT,RIGHT = 0,1,2,3
+action_list = [UP, DOWN, LEFT, RIGHT]
+algorithm_list = {"Q_Learning": "QLearning", "Sarsa": "Sarsa"}
 
 class MainWindow(QMainWindow, UiMainWindow):
     def __init__(self, maze: Maze) -> None:
         super(MainWindow, self).__init__()
-        self.maze = maze
-        self.maze.move_finished.connect(self.update)
         self.setupUi(self)
+        self.maze = maze
+        self.brain = QLearning(action_list)
+        self.maze.move_finished.connect(self.update)
+        self.pushButton.clicked.connect(self.start)
+        self.comboBox.currentTextChanged.connect(self.change_algorithm)
         self.show()
 
     def paintEvent(self, event) -> None:
@@ -78,9 +87,22 @@ class MainWindow(QMainWindow, UiMainWindow):
             Qt.GlobalColor.red,
         )
 
-    def start(self):
+    def start(self,brain):
         """开始算法, 并禁用 comboBox 和 start 按钮
         setEnable(False)"""
+        # print("clicked")
+        
+        self.pushButton.setEnabled(False)
+        self.comboBox.setEnabled(False)
+        threading.Thread(target=algorithm_start, args=(self.maze,self.brain)).start()
 
     def change_algorithm(self):
         """根据 comboBox 里面的 Text, 改变当前使用的算法"""
+
+        self.brain=algorithm_list[self.comboBox.currentText()](action_list)
+        # if self.comboBox.currentText() == "Recurrence":
+        #     self.brain=QLearning(action_list)
+        # elif self.comboBox.currentText() == "Q_Learning":
+        #     print("clicked1")
+        # elif self.comboBox.currentText() == "Sarsa":
+        #     print("clicked2")
