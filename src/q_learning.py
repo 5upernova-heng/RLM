@@ -7,7 +7,7 @@ class QLearning:
     def __init__(
         self,
         action_list,
-        learning_rate: float = 1,
+        learning_rate: float = 0.01,
         reward_decay: float = 0.9,
         epsilon: float = 1,
     ) -> None:
@@ -34,7 +34,9 @@ class QLearning:
 
     def remove_action(self, action_list, action: int):
         if action in action_list:
-            return action_list.copy().remove(action)
+            filtered_action_list = action_list.copy()
+            filtered_action_list.remove(action)
+            return filtered_action_list
 
     def reverse_action(self, action: int) -> int:
         """reverse action"""
@@ -56,15 +58,25 @@ class QLearning:
             self.add_new_state(state)
         if np.random.uniform() < self.epsilon:
             action_reward_list = self.q_table.loc[state, :]
+            if self.last_action is not None:
+                filtered_action_list = self.remove_action(
+                    self.action_list, self.reverse_action(self.last_action)
+                )
+                action_reward_list = action_reward_list[filtered_action_list]
             best_choices = action_reward_list[
                 action_reward_list == np.max(action_reward_list)
             ].index.tolist()
         else:
             best_choices = self.action_list
         # never look back
-        self.remove_action(best_choices, self.last_action)
+        if self.last_action is not None:
+            self.remove_action(best_choices, self.reverse_action(self.last_action))
         choice = np.random.choice(best_choices)
-        self.last_action = self.reverse_action(choice)
+
+        self.last_action = choice
+        # action_str = {0: "UP", 1: "DOWN", 2: "LEFT", 3: "RIGHT"}
+        # print(f"last_action: {action_str[self.last_action]}")
+        # print(f"this_action: {action_str[choice]}")
         return choice
 
     def learn(self, state: str, action: int, reward: int, next_state: str):
@@ -82,8 +94,8 @@ class QLearning:
         else:
             # wall(-1) or end(1)
             fixed_value = reward
+            print(self.q_table)
         # learn
         self.q_table.loc[state, action] += self.learning_rate * (
             fixed_value - predict_value
         )  # 学习，更新刚刚那步的权重
-        print(self.q_table)
