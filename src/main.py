@@ -2,9 +2,9 @@
 
 
 import numpy as np
-from MainWindow import *
-from Maze import *
-from QLearning import *
+from main_window import *
+from maze import *
+from q_learning import *
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 LOOP_TIME = 1000
@@ -37,8 +37,7 @@ if __name__ == "__main__":
     # window = MainWindow()
     start_pos = (0, 0)
     end_pos = (2, 4)
-    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2],
-                     [3, 3], [2, 3], [1, 3], [1, 4]])
+    walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
     maz = Maze(5, 5, start_pos, end_pos, walls)
     brain = QLearning(action_list)
