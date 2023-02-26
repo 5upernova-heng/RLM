@@ -35,18 +35,18 @@ def algorithm_start(maze: Maze, brain: QLearning):
 
 
 if __name__ == "__main__":
-    print("Please input the Square side length:")
-    Len = int(input())
     # Maze
-    start_pos = (0, 0)
+    # start_pos = (0, 0)
+    # end_pos = (2, 4)
+    # walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
     action_list = [UP, DOWN, LEFT, RIGHT]
-    maze = generate_maze(Len)
+    maze = generate_maze(5)
     action_list = [UP, DOWN, LEFT, RIGHT]
     # Ui
     app = QApplication(sys.argv)
     window = MainWindow(maze)
 
     # Algorithm
-    brain = QLearning(action_list)
-    threading.Thread(target=algorithm_start, args=(maze, brain)).start()
-    app.exec()
+    # brain = QLearning(action_list)
+    # threading.Thread(target=algorithm_start, args=(maze, brain)).start()
+    sys.exit(app.exec())
