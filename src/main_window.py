@@ -91,6 +91,7 @@ class MainWindow(QMainWindow, UiMainWindow):
             grid_size - 2 * agent_margin,
             Qt.GlobalColor.red,
         )
+        painter.end()
 
     def start(self,brain):
         """开始算法, 并禁用 comboBox 和 start 按钮
