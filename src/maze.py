@@ -49,6 +49,7 @@ class Maze(QObject):
 
     move_finished = pyqtSignal()
     recover_Button = pyqtSignal()
+    # dead_happen = pyqtSignal()
 
     def get_agent_pos(self) -> Tuple[int, int]:
         return self.agent.pos
@@ -71,6 +72,7 @@ class Maze(QObject):
     def feedback(self) -> int:
         """获取反馈 (rewards)"""
         if self.isWall() or self.isOut():
+            # self.dead_happen.emit()
             return -1
         if self.isEnd():
             # print("clicked")
