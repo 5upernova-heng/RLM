@@ -25,8 +25,7 @@ def make_maze(w, h):
     return s
 
 
-def generate_maze():
-    rad = randrange(5, 10)
+def generate_maze(rad):
     (w, h) = (rad, rad)
     WIDTH = w * 2 - 1
     HEIGHT = h * 2 - 1
@@ -39,6 +38,7 @@ def generate_maze():
                 walls = np.append(walls, [[i - 1, j - 1]], axis = 0 )
         #print()
     #print(walls)
+    walls = walls[1:]
     start_pos = (0, 0)
     end_pos = (0, 0)
     while(1):
