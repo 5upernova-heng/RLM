@@ -24,13 +24,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.maze = maze
-        self.brain = rl_algorithm_list[self.comboBox.currentText()](action_list)
-        self.maze_generator = maze_generator_list[self.comboBox_2.currentText()]()
-        self.spinBox.setMinimum(5)
-        self.pushButton.clicked.connect(self.start)
-        self.pushButton_2.clicked.connect(self.new_maze)
-        self.comboBox.currentTextChanged.connect(self.change_rl_algorithm)
-        self.comboBox_2.currentIndexChanged.connect(self.change_maze_generator)
+        self.brain = rl_algorithm_list[self.rl_algorithm_combo_box.currentText()](
+            action_list
+        )
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
+        self.start_button.clicked.connect(self.start)
+        self.generate_maze_button.clicked.connect(self.new_maze)
+        self.rl_algorithm_combo_box.currentTextChanged.connect(self.change_rl_algorithm)
+        self.maze_generator_combo_box.currentIndexChanged.connect(
+            self.change_maze_generator
+        )
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
         self.maze.iterate_finished.connect(self.show_iteration_times)
@@ -99,33 +104,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         painter.end()
 
     def start(self, brain):
-        self.pushButton.setEnabled(False)
-        self.pushButton_2.setEnabled(False)
-        self.comboBox.setEnabled(False)
-        self.comboBox_2.setEnabled(False)
+        self.start_button.setEnabled(False)
+        self.generate_maze_button.setEnabled(False)
+        self.rl_algorithm_combo_box.setEnabled(False)
+        self.maze_generator_combo_box.setEnabled(False)
 
         threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
 
     def recover(self):
-        self.pushButton.setEnabled(True)
-        self.pushButton_2.setEnabled(True)
-        self.comboBox.setEnabled(True)
-        self.comboBox_2.setEnabled(True)
+        self.start_button.setEnabled(True)
+        self.generate_maze_button.setEnabled(True)
+        self.rl_algorithm_combo_box.setEnabled(True)
+        self.maze_generator_combo_box.setEnabled(True)
 
     def change_rl_algorithm(self):
-        self.brain = rl_algorithm_list[self.comboBox.currentText()](action_list)
+        self.brain = rl_algorithm_list[self.rl_algorithm_combo_box.currentText()](
+            action_list
+        )
 
     def change_maze_generator(self):
-        self.maze_generator = maze_generator_list[self.comboBox_2.currentText()]()
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
 
     def show_iteration_times(self, iteration_time):
-        self.label.setText(f"Agent has iterate: {str(iteration_time)} times")
+        self.iteration_time_label.setText(
+            f"Agent has iterate: {str(iteration_time)} times"
+        )
 
     def new_maze(self):
         self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
-        self.maze = self.maze_generator.generate(self.spinBox.value())
+        self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
         self.maze.iterate_finished.connect(self.show_iteration_times)

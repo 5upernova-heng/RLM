@@ -28,7 +28,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="iteration_time_label">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -90,10 +90,14 @@
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="10">
-        <widget class="QSpinBox" name="spinBox"/>
+        <widget class="QSpinBox" name="maze_radius_spin_box">
+         <property name="minimum">
+          <number>5</number>
+         </property>
+        </widget>
        </item>
        <item row="0" column="3">
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="start_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -106,7 +110,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="rl_algorithm_combo_box">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -126,7 +130,7 @@
         </widget>
        </item>
        <item row="0" column="7">
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="generate_maze_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -191,7 +195,7 @@
         </spacer>
        </item>
        <item row="0" column="6">
-        <widget class="QComboBox" name="comboBox_2">
+        <widget class="QComboBox" name="maze_generator_combo_box">
          <item>
           <property name="text">
            <string>Kruskal</string>
