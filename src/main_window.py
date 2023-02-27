@@ -20,10 +20,13 @@ maze_generator_list = {"Recursive Walk": RecursiveWalk, "Kruskal": Kruskal}
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, maze: Maze) -> None:
+    def __init__(self) -> None:
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.maze = maze
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
+        self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
         self.bind_signal()
         self.show()
 
