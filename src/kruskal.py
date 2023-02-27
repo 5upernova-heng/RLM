@@ -9,8 +9,11 @@ import numpy as np
 
 
 class Kruskal:
-    def __init__(self):
-        pass
+    def init(self):
+        self.diameter = self.radius * 2 - 1
+        self._set = UnionFindSet(self.radius * self.radius)
+        self._edge_list = []
+        self._path_matrix = np.zeros((self.diameter, self.diameter), dtype=bool)
 
     def generate_edge_set(self):
         """
@@ -38,32 +41,29 @@ class Kruskal:
             if self._set.isUnited(edge[0], edge[1]) is False:
                 self._set.unite(edge[0], edge[1])
                 # print(f"Connect {edge[0]} with {edge[1]}")
-                point = min(edge[0], edge[1])
-                x = (point // self.radius) * 2
-                y = (point % self.radius) * 2
-                self._path_list.append((x, y))
+                x = (edge[0] // self.radius) * 2
+                y = (edge[0] % self.radius) * 2
+                self._path_matrix[x][y] = True
                 if abs(edge[0] - edge[1]) != self.radius:
                     # print(f"Connect ({x//2}, {y//2}) with ({x//2}, {y//2+1})")
-                    self._path_list.append((x, y + 1))
-                    self._path_list.append((x, y + 2))
+                    self._path_matrix[x][y + 1] = True
+                    self._path_matrix[x][y + 2] = True
                 else:
                     # print(f"Connect ({x//2}, {y//2}) with ({x//2+1}, {y//2})")
-                    self._path_list.append((x + 1, y))
-                    self._path_list.append((x + 2, y))
+                    self._path_matrix[x + 1][y] = True
+                    self._path_matrix[x + 2][y] = True
 
     def generate_walls(self):
-        x, y = np.meshgrid(np.arange(self.diameter), np.arange(self.diameter))
-        self._walls = np.column_stack((x.flatten(), y.flatten()))
-        for path in self._path_list:
-            mask = np.all(self._walls == path, axis=1)
-            self._walls = self._walls[~mask]
+        self._walls = np.array([[-1, -1]])
+        for x in range(self.diameter):
+            for y in range(self.diameter):
+                if not self._path_matrix[x][y]:
+                    self._walls = np.append(self._walls, [[x, y]], axis=0)
+        self._walls = self._walls[1:]
 
     def generate(self, radius):
         self.radius = radius
-        self.diameter = radius * 2 - 1
-        self._set = UnionFindSet(radius * radius)
-        self._edge_list = []
-        self._path_list = []
+        self.init()
         self.generate_edge_set()
         shuffle(self._edge_list)
         self.unite()
@@ -79,5 +79,4 @@ if __name__ == "__main__":
     Testing
     """
     kruskal = Kruskal()
-    kruskal.generate(5)
     kruskal.generate(5)
