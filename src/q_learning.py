@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
+from solver import Solver
 
 
-class QLearning:
+class QLearning(Solver):
     def __init__(
         self,
         action_list,
-        learning_rate: float = 0.01,
+        learning_rate: float = 1,
         reward_decay: float = 0.9,
         epsilon: float = 0.9,
     ) -> None:
