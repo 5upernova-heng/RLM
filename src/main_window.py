@@ -30,6 +30,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.maze_generator = maze_generator_list[
             self.maze_generator_combo_box.currentText()
         ]()
+        self.bind_signal()
+        self.show()
+
+    def bind_signal(self):
         self.start_button.clicked.connect(self.start)
         self.generate_maze_button.clicked.connect(self.new_maze)
         self.rl_algorithm_combo_box.currentTextChanged.connect(self.change_rl_algorithm)
@@ -39,7 +43,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
         self.maze.iterate_finished.connect(self.show_iteration_times)
-        self.show()
 
     def paintEvent(self, event) -> None:
         painter = QPainter()
