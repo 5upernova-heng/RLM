@@ -24,12 +24,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.maze = maze
-        self.brain = rl_algorithm_list[self.rl_algorithm_combo_box.currentText()](
-            action_list
-        )
-        self.maze_generator = maze_generator_list[
-            self.maze_generator_combo_box.currentText()
-        ]()
         self.bind_signal()
         self.show()
 
@@ -106,12 +100,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         painter.end()
 
-    def start(self, brain):
+    def start(self):
         self.start_button.setEnabled(False)
         self.generate_maze_button.setEnabled(False)
         self.rl_algorithm_combo_box.setEnabled(False)
         self.maze_generator_combo_box.setEnabled(False)
-
+        self.brain = rl_algorithm_list[self.rl_algorithm_combo_box.currentText()](
+            action_list
+        )
         threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
 
     def recover(self):
@@ -136,6 +132,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
 
     def new_maze(self):
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
         self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
