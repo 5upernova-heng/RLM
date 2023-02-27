@@ -19,6 +19,7 @@ is_out_bound: agent is out of bound or not"""
 
 from typing import Tuple
 from PyQt6.QtCore import pyqtSignal, QObject
+from rich import print
 import numpy as np
 
 
@@ -74,9 +75,12 @@ class Maze(QObject):
         """获取反馈 (rewards)"""
         if self.isWall() or self.isOut():
             self.iterations_num += 1
+            print(f"Agent has iterate {self.iterations_num} times.", end="\r")
             return -1
         if self.isEnd():
             self.iterate_finished.emit(self.iterations_num)
+            self.iterations_num = 0
+            print()
             self.recover_Button.emit()
             return 1
         return 0

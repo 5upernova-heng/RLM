@@ -7,7 +7,6 @@ from recursive_walk import RecursiveWalk
 from kruskal import Kruskal
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
-LOOP_TIME = 1000
 
 
 def algorithm_start(maze: Maze, brain: QLearning):
@@ -37,11 +36,10 @@ if __name__ == "__main__":
     # start_pos = (0, 0)
     # end_pos = (2, 4)
     # walls = np.array([[1, 0], [1, 1], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [1, 4]])
-    maze = Kruskal().generate(5)
     action_list = [UP, DOWN, LEFT, RIGHT]
     # Ui
     app = QApplication(sys.argv)
-    window = MainWindow(maze)
+    window = MainWindow()
 
     # Algorithm
     # brain = QLearning(action_list)
