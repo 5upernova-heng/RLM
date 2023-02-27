@@ -8,7 +8,7 @@ class QLearning:
         action_list,
         learning_rate: float = 0.01,
         reward_decay: float = 0.9,
-        epsilon: float = 1,
+        epsilon: float = 0.9,
     ) -> None:
         self.action_list = action_list
         self.learning_rate = learning_rate
