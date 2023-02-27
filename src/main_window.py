@@ -6,11 +6,10 @@ from main_window_ui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
-from maze import *
 from q_learning import QLearning
 from recursive_walk import RecursiveWalk
 from kruskal import Kruskal
-from main import algorithm_start
+from algorithm_framework import AlgorithmFramework
 import threading
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
@@ -20,10 +19,14 @@ maze_generator_list = {"Recursive Walk": RecursiveWalk, "Kruskal": Kruskal}
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, maze: Maze) -> None:
+    def __init__(self) -> None:
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.maze = maze
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
+        self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
+        self.rlm = AlgorithmFramework()
         self.bind_signal()
         self.show()
 
@@ -101,16 +104,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         painter.end()
 
     def start(self):
-        self.start_button.setEnabled(False)
+        self.start_button.setText("Stop")
+        self.start_button.clicked.disconnect(self.start)
+        self.start_button.clicked.connect(self.stop)
         self.generate_maze_button.setEnabled(False)
         self.rl_algorithm_combo_box.setEnabled(False)
         self.maze_generator_combo_box.setEnabled(False)
         self.brain = rl_algorithm_list[self.rl_algorithm_combo_box.currentText()](
             action_list
         )
-        threading.Thread(target=algorithm_start, args=(self.maze, self.brain)).start()
+        self.rlm = AlgorithmFramework()
+        self.algo_thread = threading.Thread(
+            target=self.rlm.start, args=(self.maze, self.brain)
+        )
+        self.algo_thread.start()
+
+    def stop(self):
+        self.rlm.stop()
+        self.algo_thread.join()
+        self.recover()
 
     def recover(self):
+        self.start_button.setText("Start")
+        self.start_button.clicked.disconnect(self.stop)
+        self.start_button.clicked.connect(self.start)
         self.start_button.setEnabled(True)
         self.generate_maze_button.setEnabled(True)
         self.rl_algorithm_combo_box.setEnabled(True)
@@ -132,12 +149,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
 
     def new_maze(self):
-        self.maze_generator = maze_generator_list[
-            self.maze_generator_combo_box.currentText()
-        ]()
         self.maze.iterate_finished.disconnect(self.show_iteration_times)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
+        self.maze_generator = maze_generator_list[
+            self.maze_generator_combo_box.currentText()
+        ]()
         self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)

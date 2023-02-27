@@ -28,3 +28,4 @@ Reinforcement Learning in Maze
 - [x] Generate random
   - [x] with custom size
 - [x] Show iteration times
+- [ ] Stop Button

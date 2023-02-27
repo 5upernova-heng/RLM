@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
+from solver import Solver
 
 
-class QLearning:
+class QLearning(Solver):
     def __init__(
         self,
         action_list,
-        learning_rate: float = 0.01,
+        learning_rate: float = 1,
         reward_decay: float = 0.9,
         epsilon: float = 0.9,
     ) -> None:
@@ -73,9 +74,6 @@ class QLearning:
         choice = np.random.choice(best_choices)
 
         self.last_action = choice
-        # action_str = {0: "UP", 1: "DOWN", 2: "LEFT", 3: "RIGHT"}
-        # print(f"last_action: {action_str[self.last_action]}")
-        # print(f"this_action: {action_str[choice]}")
         return choice
 
     def learn(self, state: str, action: int, reward: int, next_state: str):
@@ -93,8 +91,7 @@ class QLearning:
         else:
             # wall(-1) or end(1)
             fixed_value = reward
-            # print(self.q_table)
         # learn
         self.q_table.loc[state, action] += self.learning_rate * (
             fixed_value - predict_value
-        )  # 学习，更新刚刚那步的权重
+        )
