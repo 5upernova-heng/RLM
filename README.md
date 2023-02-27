@@ -15,15 +15,15 @@ Reinforcement Learning in Maze
 
 ## Maze Generator Algorithms
 
+- [x] Kruskal Algorithm
+- [x] Recursively Walk
 - [ ] DFS
-- [ ] Kruskal Algorithm
 - [ ] Prim Algorithm
 - [ ] Recursively Divide
 
 ## User Interface
 
 - [x] Draw the maze
-  - [ ] with solution
 - [x] Select Button
 - [x] Generate random
   - [x] with custom size
