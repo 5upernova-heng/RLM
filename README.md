@@ -2,6 +2,10 @@
 
 Reinforcement Learning in Maze
 
+## UML Class Diagram
+
+![img](class_diagram.png)
+
 ## RL Algorithms
 
 - [x] Q Learning
