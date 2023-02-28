@@ -32,7 +32,7 @@ class AlgorithmFramework:
                     break
             if success or self.stop_event.is_set():
                 if success:
-                    print("\nMaze solved.")
+                    print("Maze solved.")
                 else:
                     print("\nStopped.")
                 break
