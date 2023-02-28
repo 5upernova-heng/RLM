@@ -11,11 +11,16 @@ from value_iteration import ValueIteration
 from recursive_walk import RecursiveWalk
 from kruskal import Kruskal
 from algorithm_framework import AlgorithmFramework
+from policy_iteration import PolicyIteration
 import threading
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 action_list = [UP, DOWN, LEFT, RIGHT]
-rl_algorithm_list = {"Q_Learning": QLearning, "Sarsa": "Sarsa", "Value Iteration": ValueIteration}
+rl_algorithm_list = {
+    "Q_Learning": QLearning,
+    "Policy Iteration": PolicyIteration,
+    "Value Iteration": ValueIteration
+}
 maze_generator_list = {"Recursive Walk": RecursiveWalk, "Kruskal": Kruskal}
 
 
