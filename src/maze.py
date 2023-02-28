@@ -79,8 +79,8 @@ class Maze(QObject):
             return -1
         if self.isEnd():
             self.iterate_finished.emit(self.iterations_num)
+            print(f"Agent has iterate {self.iterations_num} times.")
             self.iterations_num = 0
-            print()
             self.recover_Button.emit()
             return 1
         return 0
