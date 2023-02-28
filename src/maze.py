@@ -88,6 +88,7 @@ class Maze(QObject):
     def reset(self) -> None:
         """将 agent 移动到起点"""
         self.agent.change_pos(self.start_pos)
+        self.move_finished.emit()
 
     def isWall(self) -> bool:
         x, y = self.agent.pos
