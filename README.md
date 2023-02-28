@@ -9,9 +9,9 @@ Reinforcement Learning in Maze
 ## RL Algorithms
 
 - [x] Q Learning
+- [x] Policy Iteration
 - [ ] SARSA
 - [ ] Value Iteration
-- [ ] Policy Iteration
 - [ ] Evolution Strategies
 - [ ] DQN
 - [ ] A3C
@@ -32,4 +32,4 @@ Reinforcement Learning in Maze
 - [x] Generate random
   - [x] with custom size
 - [x] Show iteration times
-- [ ] Stop Button
+- [x] Stop Button
