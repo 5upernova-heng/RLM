@@ -1,110 +1,96 @@
-import pandas as pd
+from solver import Solver
+from typing import *
+# from random import choice
+import random
 import numpy as np
 
+UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 
-class ValueIteration:
-    def __init__(
-        self,
-        action_list,                    #MDP中所有可能动作的列表
-        learning_rate: float = 0.01,    #更新Q值的学习率
-        reward_decay: float = 0.9,      #奖励的折扣因子
-        epsilon: float = 1,             #通过espilon-greedy来探索epsilon值
-        max_iterations: int = 100,      #值迭代算法的最大迭代次数
-        tolerance: float =0.01,         
-        delta: float =0.2,              
-        greatest:int =0
-        
-    ) -> None:
-        self.action_list = action_list
-        self.learning_rate = learning_rate
-        self.reward_decay = reward_decay
-        self.epsilon = epsilon
-        self.max_iterations = max_iterations
-        self.tolerance=tolerance
-        self.delta=delta
-        self.greatest=greatest
-        self.q_table = pd.DataFrame(columns=action_list, dtype=np.float64)
-        self.last_action = None
-        
-    def exist(self, state: str) -> bool:
-        """检测目前 Q 表中是否存在 state 状态"""
-        return state in self.q_table.index
+# value_table 用来保存状态价值表
+# policy 一个字典，用来保存策略表
+# left_action 一个字典，对应于每一个state，保留还可以选择的动作，（去除墙和边界）
+# action_list 保存4个动作，UP DOWN LEFT RIGHT
+# action_value 保存一个状态对应的4种动作分别存储的v值
 
-    def add_new_state(self, state: str):
-        """为 Q 表添加新状态"""
-        new_row = pd.DataFrame(
-            data=np.array([0] * len(self.action_list)).reshape(1, 4),
-            index=[state],
-            columns=self.action_list,
-            dtype=np.float64,
-        )
-        self.q_table = pd.concat([self.q_table, new_row])
+class ValueIteration(Solver):
+    def __init__(self,action_list:List[int],gamma:float=0.9)->None:# gamma 表示折扣因子
+        self.action_list=action_list
+        self.gamma=gamma
+        self.policy={}
+        self.value_table={}
+        self.left_action={}     # left_action 一个字典，对应于每一个state，保留还可以选择的动作，（去除墙和边界）
 
+        #定义字典，key为状态state，value是一个列表，记录四个状态
+        self.action_value={}
 
-    def reverse_action(self, action: int) -> int:
-        """返回给定动作的相反方向"""
-        UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
-        if action == UP:
-            return DOWN
-        elif action == DOWN:
-            return UP
-        elif action == LEFT:
-            return RIGHT
-        elif action == RIGHT:
-            return LEFT
-        else:
-            raise ValueError("action is not valid")    
+    def add_state(self,state:str)->None:    #添加新状态进去
+        self.value_table[state]=0
 
-    def remove_action(self, action_list, action: int):
-        """从可能动作的列表中删除给定的动作"""
-        if action in action_list:
-            filtered_action_list = action_list.copy()
-            filtered_action_list.remove(action)
-            return filtered_action_list
-        
+    def add_list(self,state:str)->None:     #为新的状态创建一个四元组，记录action_value
+        newlist=[-1000.0]*4
+        self.action_value[state]=newlist
+
     def make_decision(self, state: str) -> int:
-        """使用epsilon-greedy探索选择执行的动作"""
-        if not self.exist(state):
-            self.add_new_state(state)
-        action_reward_list = self.q_table.loc[state, :]
-        best_choices = action_reward_list[
-            action_reward_list == np.max(action_reward_list)
-        ].index.tolist()
-        # choice = np.random.choice(best_choices)
-
-        #never look back
-        if self.last_action is not None:
-            self.remove_action(best_choices, self.reverse_action(self.last_action))
-        
-        choice = np.random.choice(best_choices)
-
-        self.last_action = choice
-
-        return choice    
-
-    def learn(self, state: str, action: int, reward: int, next_state: str):
-        """,使用贝尔曼方程更新给定状态-动作的Q值"""
-        if not self.exist(next_state):
-            self.add_new_state(next_state)
-        while True:
-            next_q_values = self.q_table.loc[next_state, :]
-            max_q_value = np.max(next_q_values)
-            if np.abs(max_q_value-(self.greatest))<self.delta:
-                target_value = reward + self.reward_decay * max_q_value
-                self.q_table.loc[state, action] += self.learning_rate * (
-                    target_value - self.q_table.loc[state, action]
-                )
-                break
-            else:
-                self.greatest=max_q_value
-                target_value = reward + self.reward_decay * max_q_value
-                self.q_table.loc[state, action] += self.learning_rate * (
-                    target_value - self.q_table.loc[state, action]
-                )
-
-            
-
-                 
-        
+        if state in self.policy.keys():
+            return self.policy[state]
+        else:
+            if state in self.value_table.keys():
+                this_list=self.left_action[state]
+                return random.choice(this_list)
+            else:   #此时表示为新状态，需要添加进去
+                # self.value_table[state]=0   #将新状态加入value_table中
+                self.add_state(state)
+                self.left_action[state]=[UP,DOWN,LEFT,RIGHT] #为新状态创建一个剩余可选动作的四元组
+                
+                # newlist=[-1000.0]*4
+                # self.action_value[state]=newlist    #为新状态的动作价值创建四元组，用于迭代
+                self.add_list(state)
+                random_action=random.choice(self.left_action[state])
+                return random_action
     
+
+    def reverse_action(self,action:int)->int:
+        if action==UP:
+            return DOWN
+        if action==DOWN:
+            return UP
+        if action==LEFT:
+            return RIGHT
+        if action==RIGHT:
+            return LEFT
+        if action==None:
+            return None
+    
+    def learn(self, state: str, action: int, reward: int, next_state: str):
+        # print(self.policy)
+        trans_porb=1.0
+        if next_state not in self.value_table:
+            # self.value_table[next_state]=0
+            # new1_list=[-1000.0]*4
+            # self.action_value[next_state]=new1_list
+            self.add_state(next_state)
+            self.add_list(next_state)
+            self.left_action[next_state]=[UP,DOWN,LEFT,RIGHT] #为新状态创建一个剩余可选动作的四元组
+
+        
+        j=action
+        temp=reward+self.gamma*trans_porb*(self.value_table[next_state])
+        self.action_value[state][j]=temp
+        max_value=np.max(self.action_value[state])
+        self.value_table[state]=max_value
+
+        if self.action_value[state][j]==-1.0:
+            if action in self.left_action[state]:
+                self.left_action[state].remove(action)
+        
+        elif reward==0:
+            reverse=self.reverse_action(action)
+            if reverse in self.left_action[next_state]:
+                self.left_action[next_state].remove(reverse)
+
+        if len(self.left_action[state])==1:
+            self.policy[state]=self.left_action[state][0]
+
+
+
 
