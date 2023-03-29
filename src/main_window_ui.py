@@ -107,6 +107,7 @@ class Ui_MainWindow(object):
         self.rl_algorithm_combo_box.setObjectName("rl_algorithm_combo_box")
         self.rl_algorithm_combo_box.addItem("")
         self.rl_algorithm_combo_box.addItem("")
+        self.rl_algorithm_combo_box.addItem("")
         self.gridLayout.addWidget(self.rl_algorithm_combo_box, 0, 1, 1, 1)
         self.generate_maze_button = QtWidgets.QPushButton(parent=self.widget)
         sizePolicy = QtWidgets.QSizePolicy(
@@ -171,6 +172,9 @@ class Ui_MainWindow(object):
         )
         self.rl_algorithm_combo_box.setItemText(
             1, _translate("MainWindow", "Policy Iteration")
+        )
+        self.rl_algorithm_combo_box.setItemText(
+            2, _translate("MainWindow", "Value Iteration")
         )
         self.generate_maze_button.setText(_translate("MainWindow", "Generate Maze"))
         self.maze_generator_combo_box.setItemText(

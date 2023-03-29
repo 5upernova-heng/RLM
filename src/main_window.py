@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from q_learning import QLearning
+from value_iteration import ValueIteration
 from recursive_walk import RecursiveWalk
 from kruskal import Kruskal
 from algorithm_framework import AlgorithmFramework
@@ -18,6 +19,7 @@ action_list = [UP, DOWN, LEFT, RIGHT]
 rl_algorithm_list = {
     "Q_Learning": QLearning,
     "Policy Iteration": PolicyIteration,
+    "Value Iteration": ValueIteration
 }
 maze_generator_list = {"Recursive Walk": RecursiveWalk, "Kruskal": Kruskal}
 
