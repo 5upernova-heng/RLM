@@ -85,6 +85,7 @@ class ValueIteration(Solver):
             reverse = self.reverse_action(action)
             if reverse in self.left_action[next_state]:
                 self.left_action[next_state].remove(reverse)
+                self.action_value[next_state][reverse] = -1
 
         if len(self.left_action[state]) == 1:
             self.policy[state] = self.left_action[state][0]
