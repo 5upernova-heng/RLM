@@ -10,6 +10,7 @@ from PyQt6.QtCore import *
 from algorithm_framework import AlgorithmFramework
 from q_learning import QLearning
 from sarsa import SARSA
+from value_iteration import ValueIteration
 from policy_iteration import PolicyIteration
 
 from recursive_walk import RecursiveWalk
