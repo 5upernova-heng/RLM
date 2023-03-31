@@ -19,7 +19,6 @@ is_out_bound: agent is out of bound or not"""
 
 from typing import *
 from PyQt6.QtCore import pyqtSignal, QObject
-from rich import print
 import numpy as np
 
 
