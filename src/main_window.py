@@ -15,6 +15,7 @@ from policy_iteration import PolicyIteration
 
 from recursive_walk import RecursiveWalk
 from kruskal import Kruskal
+from typing import *
 import threading
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
@@ -37,6 +38,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ]()
         self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
         self.rlm = AlgorithmFramework()
+        self.showRoutine = False
+        self.routine = []
         self.bind_signal()
         self.show()
 
@@ -49,11 +52,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
-        self.maze.iterate_finished.connect(self.show_iteration_times)
+        self.maze.iterate_finished.connect(self.iteration_terminated)
 
-    def paintEvent(self, event) -> None:
-        painter = QPainter()
-        painter.begin(self)
+    def draw_maze(self, painter: QPainter) -> None:
         canvas_rect = self.canvas.frameGeometry()
         grid_size = min(
             canvas_rect.width() // self.maze.width,
@@ -111,6 +112,73 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             grid_size - 2 * agent_margin,
             Qt.GlobalColor.red,
         )
+
+    def draw_action(
+        self,
+        x: int,
+        y: int,
+        action: int,
+        grid_size: int,
+        line_width: int,
+        painter: QPainter,
+    ) -> Tuple[int, int]:
+        COLOR = Qt.GlobalColor.blue
+        if action == UP:
+            x_start = x - line_width
+            y_start = y - grid_size - line_width
+            painter.fillRect(
+                x_start, y_start, 2 * line_width, grid_size + 2 * line_width, COLOR
+            )
+            return x, y - grid_size
+        if action == DOWN:
+            x_start = x - line_width
+            y_start = y - line_width
+            painter.fillRect(x_start, y_start, 2 * line_width, grid_size, COLOR)
+            return x, y + grid_size
+        if action == LEFT:
+            x_start = x - grid_size - line_width
+            y_start = y - line_width
+            painter.fillRect(
+                x_start, y_start, grid_size + 2 * line_width, 2 * line_width, COLOR
+            )
+            return x - grid_size, y
+        if action == RIGHT:
+            x_start = x - line_width
+            y_start = y - line_width
+            painter.fillRect(x_start, y_start, grid_size, 2 * line_width, COLOR)
+            return x + grid_size, y
+        if action < 0 or action > 3:
+            print(action)
+
+    def draw_routine(self, painter: QPainter, routine: List[int]) -> None:
+        """draw out the routine"""
+        canvas_rect = self.canvas.frameGeometry()
+        grid_size = min(
+            canvas_rect.width() // self.maze.width,
+            canvas_rect.height() // self.maze.height,
+        )
+        canvas_center = canvas_rect.center()
+        if self.maze.width % 2 == 0:
+            x = canvas_center.x() - grid_size * (self.maze.width // 2) + grid_size // 2
+            y = canvas_center.y() - grid_size * (self.maze.height // 2) + grid_size // 2
+        else:
+            x = canvas_center.x() - grid_size * (self.maze.width // 2)
+            y = canvas_center.y() - grid_size * (self.maze.height // 2)
+        line_width = grid_size // 8
+        for action in routine:
+            x_next, y_next = self.draw_action(
+                x, y, action, grid_size, line_width, painter
+            )
+            x = x_next
+            y = y_next
+
+    def paintEvent(self, event) -> None:
+        painter = QPainter()
+        painter.begin(self)
+        self.draw_maze(painter)
+        if self.showRoutine:
+            self.draw_routine(painter, self.routine)
+            # print(self.routine)
         painter.end()
 
     def start(self):
@@ -153,13 +221,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.maze_generator_combo_box.currentText()
         ]()
 
-    def show_iteration_times(self, iteration_time):
+    def iteration_terminated(self, iteration_time: int, routine: List[int]):
         self.iteration_time_label.setText(
             f"Agent has iterate: {str(iteration_time)} times"
         )
+        self.showRoutine = True
+        self.routine = routine
 
     def new_maze(self):
-        self.maze.iterate_finished.disconnect(self.show_iteration_times)
+        self.routine = []
+        self.showRoutine = False
+        self.maze.iterate_finished.disconnect(self.iteration_terminated)
         self.maze.move_finished.disconnect(self.update)
         self.maze.recover_Button.disconnect(self.recover)
         self.maze_generator = maze_generator_list[
@@ -168,5 +240,5 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.maze = self.maze_generator.generate(self.maze_radius_spin_box.value())
         self.maze.move_finished.connect(self.update)
         self.maze.recover_Button.connect(self.recover)
-        self.maze.iterate_finished.connect(self.show_iteration_times)
+        self.maze.iterate_finished.connect(self.iteration_terminated)
         self.update()
