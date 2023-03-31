@@ -82,14 +82,12 @@ class QLearning(Solver):
         # It will not add state when it's dead
         predict_value = self.q_table.loc[state, action]
         if reward == 0:
-            # road
             if not self.exist(next_state):
                 self.add_new_state(next_state)
             fixed_value = (
                 reward + self.reward_decay * self.q_table.loc[next_state, action]
-            )  # 修正后的值
+            )
         else:
-            # wall(-1) or end(1)
             fixed_value = reward
         # learn
         self.q_table.loc[state, action] += self.learning_rate * (
