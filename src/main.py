@@ -1,9 +1,7 @@
-from main_window import MainWindow
-
 import sys
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from PyQt6.QtWidgets import QApplication
+
+from main_window import MainWindow
 
 
 def main():

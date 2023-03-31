@@ -17,9 +17,9 @@ is_dead: agent is dead or not
 is_end: agent is reach the end or not
 is_out_bound: agent is out of bound or not"""
 
+import numpy as np
 from typing import *
 from PyQt6.QtCore import pyqtSignal, QObject
-import numpy as np
 
 
 class Agent:

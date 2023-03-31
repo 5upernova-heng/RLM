@@ -2,10 +2,10 @@
     比如：按钮的逻辑
     画迷宫的逻辑等"""
 
-from main_window_ui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from main_window_ui import Ui_MainWindow
+from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtGui import QPainter
+from PyQt6.QtCore import Qt
 
 from algorithm_framework import AlgorithmFramework
 from q_learning import QLearning
