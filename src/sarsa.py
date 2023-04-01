@@ -1,6 +1,7 @@
-from solver import Solver 
+from solver import Solver
 import numpy as np
-from typing import *import numpy as np
+from typing import *
+import numpy as np
 
 
 class SARSA(Solver):
@@ -18,11 +19,13 @@ class SARSA(Solver):
             self.q_table[state] = {}
             for action in self.action_list:
                 self.q_table[state][action] = 0.0
-class SARSA(Solver): 
-    def __init__(self, action_list, learning_rate=1, reward_decay=1, e_greedy=0.9): 
-        self.action_list = action_list 
-        self.learning_rate = learning_rate 
-        self.gamma = reward_decay 
+
+
+class SARSA(Solver):
+    def __init__(self, action_list, learning_rate=1, reward_decay=1, e_greedy=0.9):
+        self.action_list = action_list
+        self.learning_rate = learning_rate
+        self.gamma = reward_decay
         self.epsilon = e_greedy
 
         self.last_action = None
@@ -37,7 +40,10 @@ class SARSA(Solver):
             self.coming_direction[state] = coming_direction
             self.q_table[state][coming_direction] = -1
 
-    def check_state_exist(self, state:str):
+    def check_state_exist(self, state: str):
+        """
+        make sure that state are in the q_table
+        """
         if state not in self.q_table.keys():
             # append new state to q table
             self.add_new_state(state)
@@ -86,15 +92,12 @@ class SARSA(Solver):
             self.deprecated_state.append(last_state)
             self.update_neighbour(last_state)
 
-
     def make_decision(self, state: str) -> int:
         self.check_state_exist(state)
         # action selection
         state_action = self.q_table[state]
         allowed_actions = [
-            action
-            for action in self.action_list
-            if state_action[action] != -1
+            action for action in self.action_list if state_action[action] != -1
         ]
         action = np.random.choice(allowed_actions)
         return action
@@ -102,10 +105,10 @@ class SARSA(Solver):
     def learn(self, state: str, action: int, reward: int, next_state: str):
         self.last_action = action
         self.check_state_exist(next_state)
-        
+
         if reward == -1 or next_state in self.deprecated_state:
             self.q_table[state][action] = -1
 
         if np.max(self.q_table[state]) == -1:
-                self.deprecated_state.append(state)
-                self.update_neighbour(state)
+            self.deprecated_state.append(state)
+            self.update_neighbour(state)
