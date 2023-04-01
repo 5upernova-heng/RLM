@@ -17,10 +17,9 @@ is_dead: agent is dead or not
 is_end: agent is reach the end or not
 is_out_bound: agent is out of bound or not"""
 
-from typing import Tuple
-from PyQt6.QtCore import pyqtSignal, QObject
-from rich import print
 import numpy as np
+from typing import *
+from PyQt6.QtCore import pyqtSignal, QObject
 
 
 class Agent:
@@ -47,11 +46,15 @@ class Maze(QObject):
         self.start_pos = start_pos
         self.end_pos = end_pos
         self.walls = walls
+        self.routine = []
         self.iterations_num = 0
 
     move_finished = pyqtSignal()
     recover_Button = pyqtSignal()
-    iterate_finished = pyqtSignal(int)
+    iterate_finished = pyqtSignal(int, list)
+
+    def clearRoutine(self) -> None:
+        self.routine = []
 
     def get_agent_pos(self) -> Tuple[int, int]:
         return self.agent.pos
@@ -69,6 +72,7 @@ class Maze(QObject):
         if action == RIGHT:
             x += 1
         self.agent.change_pos((x, y))
+        self.routine.append(action)
         self.move_finished.emit()
 
     def feedback(self) -> int:
@@ -78,7 +82,7 @@ class Maze(QObject):
             print(f"Agent has iterate {self.iterations_num} times.", end="\r")
             return -1
         if self.isEnd():
-            self.iterate_finished.emit(self.iterations_num)
+            self.iterate_finished.emit(self.iterations_num, self.routine)
             print(f"Agent has iterate {self.iterations_num} times.")
             self.iterations_num = 0
             self.recover_Button.emit()
@@ -89,6 +93,7 @@ class Maze(QObject):
         """将 agent 移动到起点"""
         self.agent.change_pos(self.start_pos)
         self.move_finished.emit()
+        self.clearRoutine()
 
     def isWall(self) -> bool:
         x, y = self.agent.pos
