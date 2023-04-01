@@ -19,6 +19,15 @@ It takes in a maze and a solver (brain) and runs the algorithm.
 The CLI version for generating statistics and testing
 """
 
+name_map = {
+    QLearning: "Q_Learning",
+    SARSA: "SARSA",
+    ValueIteration: "Value_Iteration",
+    PolicyIteration: "Policy_Iteration",
+}
+UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
+action_list = [UP, DOWN, LEFT, RIGHT]
+
 
 class AlgorithmTester:
     def __init__(self):
@@ -74,27 +83,25 @@ def create_test_cases(num: int, radius: int):
     return [Kruskal().generate(radius) for i in range(num)]
 
 
-if __name__ == "__main__":
-    NUM_OF_MAZE = 100
-    UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
-    RADIUS_RANGE = range(6, 11)
-    action_list = [UP, DOWN, LEFT, RIGHT]
-    maze_generator = Kruskal()
-    tester = AlgorithmTester()
-    algo_list = [QLearning, SARSA, ValueIteration, PolicyIteration]
-    name_map = {
-        QLearning: "Q_Learning",
-        SARSA: "SARSA",
-        ValueIteration: "Value_Iteration",
-        PolicyIteration: "Policy_Iteration",
-    }
+def test(algo_list: List[Solver], radius_range: List[int], num: int):
+    """
+    Test each algorithm with the same range with specific maze count of each radius
+    """
     for algo in algo_list:
         algo_name = name_map[algo]
         print("Testing Algorithm: ", algo_name)
         data = {}
-        for radius in RADIUS_RANGE:
+        for radius in radius_range:
             print("Maze radius:", radius)
-            test_cases = create_test_cases(NUM_OF_MAZE, radius)
+            test_cases = create_test_cases(num, radius)
             data[radius] = run_tests(test_cases, algo(action_list))
         print("Testing complete:", algo_name)
         pd.DataFrame(data=data).to_csv("%s.csv" % algo_name)
+
+
+if __name__ == "__main__":
+    test(
+        algo_list=[ValueIteration],
+        radius_range=[i for i in range(4, 40)],
+        num=1,
+    )
