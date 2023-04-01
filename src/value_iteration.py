@@ -2,11 +2,10 @@
 Value Iteration Method
 
 """
-from solver import Solver
-from typing import *
-from rich import print
 import random
 import numpy as np
+from solver import Solver
+from typing import *
 
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 
@@ -131,4 +130,3 @@ class ValueIteration(Solver):
 
         if len(self.left_action[state]) == 1:
             self.policy[state] = self.left_action[state][0]
-        # print(self.left_action)
