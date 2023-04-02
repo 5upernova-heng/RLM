@@ -182,6 +182,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         painter.end()
 
     def start(self):
+        self.showRoutine = False
         self.iteration_time_label.setText("")
         self.start_button.setText("Stop")
         self.start_button.clicked.disconnect(self.start)
